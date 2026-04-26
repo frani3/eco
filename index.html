@@ -3,9 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eco</title>
+    <title>EcoCharge Pro - Chile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        #map-placeholder {
+            background-color: #e5e7eb;
+            background-image: url('https://user-images.githubusercontent.com/10141933/62918724-6460ac80-bd9a-11e9-9236-47a3287c2ec9.png');
+            background-size: cover;
+        }
+    </style>
 </head>
-<body>
-    
+<body class="bg-slate-50 font-sans antialiased text-slate-900">
+
+    <header class="p-4 bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-emerald-600 italic">EcoCharge <span class="text-slate-400 font-light">Pro</span></h1>
+            <button class="p-2 bg-slate-100 rounded-full"><i class="fa-solid fa-sliders"></i></button>
+        </div>
+    </header>
+
+    <main class="relative h-[40vh] w-full" id="map-placeholder">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="animate-bounce bg-emerald-500 text-white p-3 rounded-full shadow-lg">
+                <i class="fa-solid fa-bolt text-xl"></i>
+            </div>
+        </div>
+    </main>
+
+    <section class="max-w-md mx-auto p-4 -mt-10 relative z-10">
+        <h2 class="text-sm font-semibold text-slate-500 mb-4 uppercase tracking-wider">Estaciones cercanas</h2>
+        
+        <div id="estaciones-container" class="space-y-4">
+            </div>
+    </section>
+
+    <script>
+        // Simulamos la respuesta JSON que mencionaste
+        const dataJSON = [
+            {
+                "id": 1,
+                "nombre": "Enel X - Costanera Center",
+                "comuna": "Providencia",
+                "estado": "disponible",
+                "conectores": "CCS2, CHAdeMO",
+                "potencia": "50kW",
+                "lat": -33.4169,
+                "lng": -70.6067
+            },
+            {
+                "id": 2,
+                "nombre": "Copec Voltex - Vitacura",
+                "comuna": "Vitacura",
+                "estado": "ocupado",
+                "conectores": "Type 2",
+                "potencia": "22kW",
+                "lat": -33.3815,
+                "lng": -70.5752
+            }
+        ];
+
+        function renderEstaciones() {
+            const container = document.getElementById('estaciones-container');
+            
+            dataJSON.forEach(estacion => {
+                const isDisponible = estacion.estado === 'disponible';
+                const card = `
+                    <div class="glass-card p-5 border border-white transition-all hover:scale-[1.02]">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-bold text-lg">${estacion.nombre}</h3>
+                                <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i> ${estacion.comuna}, Chile</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${isDisponible ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}">
+                                ${isDisponible ? 'Disponible' : 'En uso'}
+                            </span>
+                        </div>
+
+                        <div class="flex gap-4 mb-4 text-sm text-slate-600">
+                            <div class="flex items-center"><i class="fa-solid fa-plug mr-2 text-emerald-500"></i> ${estacion.conectores}</div>
+                            <div class="flex items-center"><i class="fa-solid fa-gauge-high mr-2 text-emerald-500"></i> ${estacion.potencia}</div>
+                        </div>
+
+                        <a href="https://waze.com/ul?ll=${estacion.lat},${estacion.lng}&navigate=yes" 
+                           target="_blank"
+                           class="block w-full text-center py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-colors shadow-md shadow-blue-200">
+                           <i class="fa-brands fa-waze mr-2"></i> Ir con Waze
+                        </a>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderEstaciones);
+    </script>
 </body>
 </html>
